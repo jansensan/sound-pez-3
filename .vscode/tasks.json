@@ -1,0 +1,12 @@
+{
+    "version": "0.1.0",
+    "command": "processing-java",
+    "isShellCommand": true,
+    "showOutput": "never",
+    "args": [
+        "--force",
+        "--sketch=${workspaceRoot}/src/pde/gestures_test",
+        "--output=${workspaceRoot}/bin",
+        "--run"
+    ]
+}
