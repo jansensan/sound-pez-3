@@ -3,3 +3,6 @@
 # mac osx files
 ._*
 .DS_STORE
+
+# project
+bin/
