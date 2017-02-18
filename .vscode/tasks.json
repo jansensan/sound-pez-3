@@ -5,7 +5,7 @@
     "showOutput": "never",
     "args": [
         "--force",
-        "--sketch=${workspaceRoot}/src/pde/gestures_test",
+        "--sketch=${workspaceRoot}/src/pde/sound_pez_3",
         "--output=${workspaceRoot}/bin",
         "--run"
     ]
