@@ -1,27 +1,38 @@
 import de.voidplus.leapmotion.*;
+import netP5.*;
+import oscP5.*;
+
+
+// constants
+String HOST = "127.0.0.1";
+int PORT = 5555;
 
 
 // vars
-int BG_COLOR = 20;
-
 LeapMotion leap;
+OscP5 oscP5;
+NetAddress remote;
 
 
 // processing
 void setup(){
   size(640, 360);
-  background(BG_COLOR);
+  background(0);
+  initLeapMotion();
+  initOSC();
+}
 
+void draw(){
+  background(0);
+}
+
+
+// leap motion
+void initLeapMotion() {
   // set leap to detect only swipe gestures
   leap = new LeapMotion(this).allowGestures("swipe");
 }
 
-void draw(){
-  background(BG_COLOR);
-}
-
-
-// leap motion swipe handler
 void leapOnSwipeGesture(SwipeGesture g, int state){
   int     id               = g.getId();
   Finger  finger           = g.getFinger();
@@ -33,34 +44,54 @@ void leapOnSwipeGesture(SwipeGesture g, int state){
   float   durationSeconds  = g.getDurationInSeconds();
 
   switch(state){
-    case 1: // Start
+    case 1: // start
       break;
-    case 2: // Update
+
+    case 2: // update
       break;
-    case 3: // Stop
-      println("--- SwipeGesture ---");
-      // println("direction.x: " + direction.x);
-      println("direction.y: " + direction.y);
-      println("direction.z: " + direction.z);
-      println("speed: " + speed);
-      println("duration: " + duration);
+
+    case 3: // stop
+      String vDirection;
+      String hDirection;
 
       // up/down
       if (direction.y > 0) {
-        println("going up");
+        vDirection = "up";
       } else {
-        println("going down");
+        vDirection = "down";
       }
 
       // left/right
       if (direction.z > 0) {
-        println("going right");
+        hDirection = "right";
       } else {
-        println("going left");
+        hDirection = "left";
       }
 
-      // 
-
+      sendSwipe(hDirection, vDirection, speed, duration);
       break;
   }
+}
+
+
+// osc
+void initOSC() {
+  // open osc server
+  oscP5 = new OscP5(this, PORT);
+
+  // create remote target
+  remote = new NetAddress("127.0.0.1", PORT);
+}
+
+void sendSwipe(String hDirection, String vDirection, float speed, long duration) {
+  // create osc message and label it
+  OscMessage m = new OscMessage("swipe");
+
+  m.add(hDirection);
+  m.add(vDirection);
+  m.add(speed);
+  m.add(duration);
+
+  // send data to remote target
+  oscP5.send(m, remote);
 }
